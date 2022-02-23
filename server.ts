@@ -213,7 +213,14 @@ async function handlerHttpConn(httpConn: Deno.HttpConn) {
     }
 }
 
-const server = Deno.listen({ port: 421 });
+import { parse } from 'https://deno.land/std/flags/mod.ts';
+
+const { args } = Deno;
+const DEFAULT_PORT = 8000;
+const argPort = parse(args).port;
+
+const server = Deno.listen({ port: argPort ? Number(argPort) : DEFAULT_PORT });
+console.log(server.addr)
 
 for await (const conn of server) {
     handlerHttpConn(Deno.serveHttp(conn));
